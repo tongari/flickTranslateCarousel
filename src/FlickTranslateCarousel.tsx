@@ -103,6 +103,13 @@ export const FlickTranslateCarousel = ({
     handleDragEnd(e.changedTouches[0].clientX);
   };
 
+  const handleMouseLeave = (e: MouseEvent) => {
+    if (isDragging.current) {
+      handleDragEnd(e.clientX);
+    }
+    isDragging.current = false;
+  };
+
   useEffect(() => {
     const container = containerRef.current;
     const track = trackRef.current;
@@ -117,7 +124,7 @@ export const FlickTranslateCarousel = ({
     container.addEventListener("mousedown", handleMouseDown);
     container.addEventListener("mousemove", handleMouseMove);
     container.addEventListener("mouseup", handleMouseUp);
-    container.addEventListener("mouseleave", handleMouseUp);
+    container.addEventListener("mouseleave", handleMouseLeave);
 
     // タッチイベント
     container.addEventListener("touchstart", handleTouchStart);
@@ -131,7 +138,7 @@ export const FlickTranslateCarousel = ({
       container.removeEventListener("mousedown", handleMouseDown);
       container.removeEventListener("mousemove", handleMouseMove);
       container.removeEventListener("mouseup", handleMouseUp);
-      container.removeEventListener("mouseleave", handleMouseUp);
+      container.removeEventListener("mouseleave", handleMouseLeave);
 
       // タッチイベントの削除
       container.removeEventListener("touchstart", handleTouchStart);
