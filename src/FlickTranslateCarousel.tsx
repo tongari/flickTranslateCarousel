@@ -146,7 +146,7 @@ export const FlickTranslateCarousel = ({
         className="carousel-track"
         ref={trackRef}
         style={{
-          transform: `translate3d(${position}px, 0, 0)`,
+          transform: `translateX(${position}px)`,
           transition: isDragging.current ? "none" : "transform 0.3s",
         }}
       >
