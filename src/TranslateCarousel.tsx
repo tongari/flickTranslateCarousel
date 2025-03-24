@@ -22,20 +22,43 @@ export const TranslateCarousel = () => {
     },
   ];
 
+  // 表示用の配列を作成（最後に最初のスライドを追加）
+  const displaySlides = [...slides, slides[0]];
+
   useEffect(() => {
     if (!trackRef.current) return;
 
     const firstSlide = trackRef.current.querySelector(".carousel-slide");
     if (!firstSlide) return;
 
-    const slideWidth = firstSlide.clientWidth; // 実際のスライド幅を取得
+    const slideWidth = firstSlide.clientWidth;
     const totalWidth = slideWidth * slides.length;
 
-    const interval = setInterval(() => {
-      setOffset((prev) => (prev + 1) % totalWidth);
-    }, 16);
+    let animationFrameId: number;
+    let startTime: number | null = null;
+    const speed = 0.05; // ピクセル/ミリ秒
 
-    return () => clearInterval(interval);
+    const animate = (currentTime: number) => {
+      if (startTime === null) {
+        startTime = currentTime;
+      }
+
+      const elapsed = currentTime - startTime;
+      const newOffset = elapsed * speed;
+
+      if (newOffset >= totalWidth) {
+        // 最後まで来たら最初に瞬時に戻る
+        startTime = currentTime;
+        setOffset(0);
+      } else {
+        setOffset(newOffset);
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
   }, [slides.length]);
 
   return (
@@ -45,10 +68,10 @@ export const TranslateCarousel = () => {
         ref={trackRef}
         style={{
           transform: `translateX(-${offset}px)`,
-          transition: "transform 0s",
+          transition: "transform 0s linear",
         }}
       >
-        {slides.map((slide, index) => (
+        {displaySlides.map((slide, index) => (
           <div className="carousel-slide" key={index}>
             <img src={slide.src} alt={slide.alt} draggable="false" />
           </div>
