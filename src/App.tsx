@@ -8,6 +8,7 @@ export default function App() {
   return (
     <div className="App">
       <h1>TranslateCarousel</h1>
+      <TranslateCarousel />
       <div>
         <p>カルーセルの数: {carouselCount}</p>
         <select
